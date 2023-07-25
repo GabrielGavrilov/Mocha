@@ -13,24 +13,20 @@ public class Example extends Mocha
             res.render("src/test/java/views/index.html");
         });
 
-        get("/about", (req, res)-> {
-            res.render("src/test/java/views/about.html");
+        get("/form", (req, res)-> {
+            res.render("src/test/java/views/form.html");
         });
 
-        get("/user/{user}", (req, res)-> {
-            res.send("<p>Hello, " + req.parameters.get("user") + "!</p>");
+        get("/user/{name}", (req, res)-> {
+           res.send("<p>Hello, " + req.parameters.get("name") + "</p>");
         });
 
         /**
-         * STATIC FILES
+         * POST ROUTES
          */
 
-        get("/background.css", (req, res)-> {
-           res.render("src/test/java/views/background.css", "text/css");
-        });
-
-        get("/foreground.css", (req, res)-> {
-           res.render("src/test/java/views/foreground.css", "text/css");
+        post("/submit", (req, res)-> {
+            res.send("<p>Gotten: " + req.payload + "</p>");
         });
 
         /**

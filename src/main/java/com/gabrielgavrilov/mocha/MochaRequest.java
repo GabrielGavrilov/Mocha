@@ -5,5 +5,6 @@ import java.util.HashMap;
 public class MochaRequest {
 
     public HashMap<String, String> parameters = new HashMap<>();
+    public String payload;
 
 }
