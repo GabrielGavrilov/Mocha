@@ -1,6 +1,7 @@
 package com.gabrielgavrilov.mocha;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,6 +35,14 @@ public class MochaClient {
 
     private void handleRequest(String route, String method, OutputStream clientOutput, BufferedReader br) throws IOException
     {
+        String type = checkForStaticRoute(route);
+
+        if(type != null)
+        {
+            handleStaticRoute(route, type, clientOutput, br);
+            return;
+        }
+
         switch(method)
         {
             case "GET":
@@ -43,6 +52,36 @@ public class MochaClient {
                 handlePostRequest(route, clientOutput, br);
                 break;
         }
+    }
+
+    private String checkForStaticRoute(String route) throws IOException
+    {
+        if(route.contains("."))
+        {
+            String[] routeSplit = route.split("\\.");
+            return routeSplit[routeSplit.length-1];
+        }
+
+        return null;
+    }
+
+    private void handleStaticRoute(String route, String type, OutputStream clientOutput, BufferedReader br) throws IOException
+    {
+        switch(type)
+        {
+            case "css":
+                handleStylesheetFile(route, clientOutput, br);
+                break;
+        }
+    }
+
+    private void handleStylesheetFile(String route, OutputStream clientOutput, BufferedReader br) throws IOException
+    {
+        String file = route.substring(1);
+        MochaResponse response = new MochaResponse();
+        response.render(file, "text/css", Mocha.STATIC_DIRECTORY);
+        clientOutput.write(response.toString().getBytes());
+        clientOutput.flush();
     }
 
     private void handleGetRequest(String route, OutputStream clientOutput) throws IOException
@@ -101,7 +140,7 @@ public class MochaClient {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-        request.payload = payload;
+        request.payload = parsePayloadToHashMap(payload);
 
         consume(Mocha.POST_ROUTES.get(route), request, response);
 
@@ -139,7 +178,7 @@ public class MochaClient {
         MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.GET_ROUTES), route);
 
-        request.parameters = parser.parse();
+        request.parameter = parser.parse();
 
         consume(consumer, request, response);
 
@@ -151,12 +190,26 @@ public class MochaClient {
         MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.POST_ROUTES), route);
 
-        request.parameters = parser.parse();
-        request.payload = payload;
+        request.parameter = parser.parse();
+        request.payload = parsePayloadToHashMap(payload);
 
         consume(consumer, request, response);
 
         clientOutput.write(response.toString().getBytes());
+    }
+
+    private HashMap<String, String> parsePayloadToHashMap(String payload)
+    {
+        HashMap<String, String> payloadData = new HashMap<>();
+        String[] payloads = payload.split("&");
+
+        for(int i = 0; i < payloads.length; i++)
+        {
+            String[] currentPayload = payloads[i].split("=");
+            payloadData.put(currentPayload[0], currentPayload[1]);
+        }
+
+        return payloadData;
     }
 
     private void handleRouteNotFoundRequest(OutputStream clientOutput) throws IOException
@@ -181,5 +234,4 @@ public class MochaClient {
     {
         return clientHeader.split("\r\n")[0].split(" ")[0];
     }
-
 }

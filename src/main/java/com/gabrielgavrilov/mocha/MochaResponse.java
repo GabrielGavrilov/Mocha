@@ -16,13 +16,13 @@ public class MochaResponse
 
     public void render(String fileName)
     {
-        render(fileName, "text/html");
+        render(fileName, "text/html", Mocha.VIEWS_DIRECTORY);
     }
-    public void render(String file, String contentType)
+    public void render(String file, String contentType, String directory)
     {
         try
         {
-            String fileContent = Files.readString(Paths.get(file));
+            String fileContent = Files.readString(Paths.get(directory + file));
             send(fileContent, contentType);
         }
         catch(IOException e)
