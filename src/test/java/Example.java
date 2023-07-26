@@ -8,13 +8,11 @@ public class Example extends Mocha
         set("views", "src/test/java/views/");
         set("static", "src/test/java/public/");
 
-        /**
-         * GET ROUTES
-         */
-
         get("/", (req, res)->
         {
+            //res.addHeader("Set-Cookie", "abc=123");
             res.render("index.html");
+            System.out.println(req.header);
         });
 
         get("/form", (req, res)->
@@ -22,17 +20,9 @@ public class Example extends Mocha
             res.render("form.html");
         });
 
-        get("/user/{name}", (req, res)->
-        {
-           res.send("<p>Hello, " + req.parameter.get("name") + "</p>");
-        });
-
-        /**
-         * POST ROUTES
-         */
-
         post("/submit", (req, res)->
         {
+            System.out.println(req.header);
             res.send("<p>Hello, " + req.payload.get("firstName") + "</p>");
         });
 

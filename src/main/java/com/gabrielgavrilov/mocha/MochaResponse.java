@@ -7,47 +7,37 @@ import java.nio.file.Paths;
 public class MochaResponse
 {
 
-    private StringBuilder RESPONSE = new StringBuilder();
+    public StringBuilder header = new StringBuilder();
+
+    MochaResponse(String status, String contentType)
+    {
+        this.header.append("HTTP/1.0 " + status + "\r\n");
+        this.header.append("Content-Type: " + contentType + "\r\n");
+    }
+
+    public void addHeader(String header, String value)
+    {
+        this.header.append(header + ": " + value + "\r\n");
+    }
 
     public void send(String data)
     {
-        this.send(data, "text/html");
+        appendEmpty();
+        this.header.append(data);
+        appendEmpty();
     }
 
     public void render(String fileName)
     {
-        render(fileName, "text/html", Mocha.VIEWS_DIRECTORY);
+        render(fileName, Mocha.VIEWS_DIRECTORY);
     }
-    public void render(String file, String contentType, String directory)
+
+    public void render(String fileName, String directory)
     {
         try
         {
-            String fileContent = Files.readString(Paths.get(directory + file));
-            send(fileContent, contentType);
-        }
-        catch(IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private void initializeHeader(String status, String contentType) throws IOException
-    {
-        this.RESPONSE.append("HTTP/1.0 " + status + "\r\n");
-        this.RESPONSE.append("Content-Type: " + contentType + "\r\n");
-        this.RESPONSE.append("\r\n");
-    }
-
-    private void send(String data, String contentType)
-    {
-        try
-        {
-            if(!this.RESPONSE.toString().contains("HTTP/1.0 200 OK"))
-                this.initializeHeader("200 OK", contentType);
-
-            this.RESPONSE.append(data);
-            this.closeHeader();
+            String fileContent = Files.readString(Paths.get(directory + fileName));
+            send(fileContent);
         }
         catch (IOException e)
         {
@@ -55,15 +45,9 @@ public class MochaResponse
         }
     }
 
-    private void closeHeader() throws IOException
+    private void appendEmpty()
     {
-        this.RESPONSE.append("\r\n");
-    }
-
-    @Override
-    public String toString()
-    {
-        return this.RESPONSE.toString();
+        this.header.append("\r\n");
     }
 
 }
