@@ -20,6 +20,11 @@ public class MochaResponse
         this.header.append(header + ": " + value + "\r\n");
     }
 
+    public void setCookie(String key, String value)
+    {
+        addHeader("Set-Cookie", key+"="+value);
+    }
+
     public void send(String data)
     {
         appendEmpty();

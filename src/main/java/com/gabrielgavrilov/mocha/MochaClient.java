@@ -130,7 +130,9 @@ public class MochaClient {
     {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse("200 OK", "text/html");
+        parseCookiesToHashMap(header);
 
+        request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(Mocha.GET_ROUTES.get(route), request, response);
@@ -145,6 +147,7 @@ public class MochaClient {
         MochaResponse response = new MochaResponse("200 OK", "text/html");
 
         request.payload = parsePayloadToHashMap(payload);
+        request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(Mocha.POST_ROUTES.get(route), request, response);
@@ -184,6 +187,7 @@ public class MochaClient {
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.GET_ROUTES), route);
 
         request.parameter = parser.parse();
+        request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(consumer, request, response);
@@ -198,6 +202,7 @@ public class MochaClient {
 
         request.parameter = parser.parse();
         request.payload = parsePayloadToHashMap(payload);
+        request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(consumer, request, response);
@@ -217,6 +222,34 @@ public class MochaClient {
         }
 
         return payloadData;
+    }
+
+    private HashMap<String, String> parseCookiesToHashMap(String header)
+    {
+        HashMap<String, String> cookieData = new HashMap<>();
+
+        if(header.contains("Cookie"))
+        {
+            String[] headerSplit = header.split("\n");
+            for(int i = 0; i < headerSplit.length; i++)
+            {
+                if(headerSplit[i].contains("Cookie"))
+                {
+                    String cookieHeader = headerSplit[i].substring(8);
+                    String[] cookies = cookieHeader.split("; ");
+
+                    for(int j = 0; j < cookies.length; j++)
+                    {
+                        String[] cookie = cookies[j].split("=");
+                        cookieData.put(cookie[0], cookie[1]);
+                    }
+
+                    return cookieData;
+                }
+            }
+        }
+
+        return null;
     }
 
     private void handleRouteNotFoundRequest(OutputStream clientOutput) throws IOException

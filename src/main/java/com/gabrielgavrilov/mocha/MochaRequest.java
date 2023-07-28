@@ -6,7 +6,7 @@ public class MochaRequest {
 
     public HashMap<String, String> parameter = new HashMap<>();
     public HashMap<String, String> payload = new HashMap<>();
-
+    public HashMap<String, String> cookie = new HashMap<>();
     public String header = "";
 
 }
