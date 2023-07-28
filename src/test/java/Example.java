@@ -7,6 +7,10 @@ public class Example extends Mocha
         set("views", "src/test/java/views/");
         set("static", "src/test/java/public/");
 
+        get("/", (req, res)->
+        {
+            res.render("index.html");
+        });
 
         /**
          * SERVER LISTENER

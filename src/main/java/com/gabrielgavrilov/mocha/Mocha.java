@@ -4,15 +4,28 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
+/**
+ * Mocha - A tiny flexible web server framework for Java
+ * @author Gabriel Gavriloiv <gabriel.gavrilov02@gmail.com>
+ */
 public class Mocha
 {
 
+    /**
+     * GET and POST routes
+     */
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> GET_ROUTES = new HashMap<>();
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> POST_ROUTES = new HashMap<>();
 
     protected static String VIEWS_DIRECTORY = "";
     protected static String STATIC_DIRECTORY = "";
 
+    /**
+     * Used to set server settings.
+     *
+     * @param setting Setting name.
+     * @param value Setting value.
+     */
     public static void set(String setting, String value)
     {
         switch(setting)
@@ -26,16 +39,37 @@ public class Mocha
         }
     }
 
+    /**
+     * Creates a new GET route. Stores the route and its callback into a HashMap. Gets called by
+     * the MochaClient class when needed.
+     *
+     * @param route Route.
+     * @param callback Callback function (BiConsumer that accepts MochaRequest and MochaResponse).
+     */
     public static void get(String route, BiConsumer<MochaRequest, MochaResponse> callback)
     {
         GET_ROUTES.put(route, callback);
     }
 
+    /**
+     * Creates a new POST route. Stores the route and its callback into a HashMap. Gets called by
+     * the MochaClient class when needed.
+     *
+     * @param route Route.
+     * @param callback Callback function (BiConsumer that accepts MochaRequest and MochaResponse).
+     */
     public static void post(String route, BiConsumer<MochaRequest, MochaResponse> callback)
     {
         POST_ROUTES.put(route, callback);
     }
 
+    /**
+     * Starts the Mocha web server at the given port and listens for new sockets.
+     *
+     * @param port Port for the server.
+     * @param callback Runnable callback that gets executed when the server starts
+     *                 listening for new sockets.
+     */
     public static void listen(int port, Runnable callback)
     {
         try

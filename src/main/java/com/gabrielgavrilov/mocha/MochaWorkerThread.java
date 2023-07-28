@@ -9,11 +9,20 @@ public class MochaWorkerThread extends Thread {
 
     private Socket client;
 
+    /**
+     * Constructor for the MochaWorkerThread. Used to start the MochaClient on
+     * a new thread.
+     *
+     * @param socket Client socket.
+     */
     MochaWorkerThread(Socket socket)
     {
         this.client = socket;
     }
 
+    /**
+     * Run method override for the MochaWorkerThread.
+     */
     @Override
     public void run()
     {

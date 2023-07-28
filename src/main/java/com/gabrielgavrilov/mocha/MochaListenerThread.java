@@ -9,11 +9,21 @@ public class MochaListenerThread extends Thread {
     private int port;
     private ServerSocket server;
 
+    /**
+     * Constructor for the MochaListenerThread. Used to start the Mocha web server on
+     * a new thread.
+     *
+     * @param port Port for the server.
+     * @throws IOException
+     */
     MochaListenerThread(int port) throws IOException {
         this.port = port;
         this.server = new ServerSocket(port);
     }
 
+    /**
+     * Run method override for the MochaListenerThread.
+     */
     @Override
     public void run()
     {
