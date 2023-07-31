@@ -8,6 +8,13 @@ import java.util.function.BiConsumer;
 
 public class MochaClient {
 
+    /**
+     * Initializer for the MochaClient class. Reads the socket's requested header
+     * and determines the response based on the method and route.
+     *
+     * @param clientInput Socket InputStream.
+     * @param clientOutput Socket OutputStream.
+     */
     MochaClient(InputStream clientInput, OutputStream clientOutput)
     {
         try
@@ -33,6 +40,16 @@ public class MochaClient {
         }
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param route
+     * @param method
+     * @param clientOutput
+     * @param br
+     * @throws IOException
+     */
     private void handleRequest(String header, String route, String method, OutputStream clientOutput, BufferedReader br) throws IOException
     {
         String type = checkForStaticRoute(route);
@@ -54,6 +71,13 @@ public class MochaClient {
         }
     }
 
+    /**
+     *
+     *
+     * @param route
+     * @return
+     * @throws IOException
+     */
     private String checkForStaticRoute(String route) throws IOException
     {
         if(route.contains("."))
@@ -65,6 +89,14 @@ public class MochaClient {
         return null;
     }
 
+    /**
+     *
+     *
+     * @param route
+     * @param type
+     * @param clientOutput
+     * @throws IOException
+     */
     private void handleStaticRoute(String route, String type, OutputStream clientOutput) throws IOException
     {
         switch(type)
@@ -84,6 +116,14 @@ public class MochaClient {
         }
     }
 
+    /**
+     *
+     *
+     * @param contentType
+     * @param route
+     * @param clientOutput
+     * @throws IOException
+     */
     private void renderStaticFile(String contentType, String route, OutputStream clientOutput) throws IOException
     {
         String file = route.substring(1);
@@ -95,6 +135,14 @@ public class MochaClient {
         clientOutput.flush();
     }
 
+    /**
+     *
+     *
+     * @param contentType
+     * @param route
+     * @param clientOutput
+     * @throws IOException
+     */
     private void renderStaticImage(String contentType, String route, OutputStream clientOutput) throws IOException
     {
         String file = route.substring(1);
@@ -124,6 +172,14 @@ public class MochaClient {
         }
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param route
+     * @param clientOutput
+     * @throws IOException
+     */
     private void handleGetRequest(String header, String route, OutputStream clientOutput) throws IOException
     {
         BiConsumer<MochaRequest, MochaResponse> consumerResponse = getBiConsumerFromParsedRoute(route, Mocha.GET_ROUTES);
@@ -141,6 +197,15 @@ public class MochaClient {
             handleRouteNotFoundRequest(clientOutput);
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param route
+     * @param clientOutput
+     * @param br
+     * @throws IOException
+     */
     private void handlePostRequest(String header, String route, OutputStream clientOutput, BufferedReader br) throws IOException
     {
         StringBuilder payload = new StringBuilder();
@@ -164,6 +229,14 @@ public class MochaClient {
             handleRouteNotFoundRequest(clientOutput);
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param route
+     * @param clientOutput
+     * @throws IOException
+     */
     private void handleGetResponse(String header, String route, OutputStream clientOutput) throws IOException
     {
         MochaRequest request = new MochaRequest();
@@ -179,6 +252,15 @@ public class MochaClient {
         clientOutput.flush();
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param route
+     * @param clientOutput
+     * @param payload
+     * @throws IOException
+     */
     private void handlePostResponse(String header, String route, OutputStream clientOutput, String payload) throws IOException
     {
         MochaRequest request = new MochaRequest();
@@ -194,6 +276,15 @@ public class MochaClient {
         clientOutput.flush();
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param consumer
+     * @param route
+     * @param clientOutput
+     * @throws IOException
+     */
     private void handleParsedGetRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput) throws IOException
     {
         MochaRequest request = new MochaRequest();
@@ -209,6 +300,16 @@ public class MochaClient {
         clientOutput.write(response.header.toString().getBytes());
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @param consumer
+     * @param route
+     * @param clientOutput
+     * @param payload
+     * @throws IOException
+     */
     private void handleParsedPostRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput, String payload) throws IOException
     {
         MochaRequest request = new MochaRequest();
@@ -225,6 +326,13 @@ public class MochaClient {
         clientOutput.write(response.header.toString().getBytes());
     }
 
+    /**
+     *
+     *
+     * @param route
+     * @param hashMap
+     * @return
+     */
     private BiConsumer<MochaRequest, MochaResponse> getBiConsumerFromParsedRoute(String route, HashMap<String, BiConsumer<MochaRequest, MochaResponse>> hashMap)
     {
         for(Map.Entry<String, BiConsumer<MochaRequest, MochaResponse>> entry : hashMap.entrySet())
@@ -237,6 +345,13 @@ public class MochaClient {
         return null;
     }
 
+    /**
+     *
+     *
+     * @param route
+     * @param hashMap
+     * @return
+     */
     private String getTemplateFromParsedRoute(String route, HashMap<String, BiConsumer<MochaRequest, MochaResponse>> hashMap)
     {
         for(Map.Entry<String, BiConsumer<MochaRequest, MochaResponse>> entry : hashMap.entrySet())
@@ -249,6 +364,12 @@ public class MochaClient {
         return null;
     }
 
+    /**
+     *
+     *
+     * @param payload
+     * @return
+     */
     private HashMap<String, String> parsePayloadToHashMap(String payload)
     {
         HashMap<String, String> payloadData = new HashMap<>();
@@ -263,6 +384,12 @@ public class MochaClient {
         return payloadData;
     }
 
+    /**
+     *
+     *
+     * @param header
+     * @return
+     */
     private HashMap<String, String> parseCookiesToHashMap(String header)
     {
         HashMap<String, String> cookieData = new HashMap<>();
@@ -291,6 +418,12 @@ public class MochaClient {
         return null;
     }
 
+    /**
+     *
+     *
+     * @param clientOutput
+     * @throws IOException
+     */
     private void handleRouteNotFoundRequest(OutputStream clientOutput) throws IOException
     {
         MochaResponse response = new MochaResponse("200 OK", "text/html");
@@ -299,16 +432,35 @@ public class MochaClient {
         clientOutput.flush();
     }
 
+    /**
+     *
+     *
+     * @param consumer
+     * @param request
+     * @param response
+     */
     private static void consume(BiConsumer<MochaRequest, MochaResponse> consumer, MochaRequest request, MochaResponse response)
     {
         consumer.accept(request, response);
     }
 
+    /**
+     *
+     *
+     * @param clientHeader
+     * @return
+     */
     private static String getRequestedRoute(String clientHeader)
     {
         return clientHeader.split("\r\n")[0].split(" ")[1];
     }
 
+    /**
+     *
+     *
+     * @param clientHeader
+     * @return
+     */
     private static String getRequestedMethod(String clientHeader)
     {
         return clientHeader.split("\r\n")[0].split(" ")[0];
