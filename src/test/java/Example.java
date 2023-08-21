@@ -12,6 +12,18 @@ public class Example extends Mocha
             res.render("index.html");
         });
 
+        get("/form", (req, res)-> {
+            res.render("form.html");
+        });
+
+        get("/greet/{name}", (req, res)-> {
+            res.send("Greetings, " + req.parameter.get("name"));
+        });
+
+        post("/submit", (req, res)-> {
+           res.send("Hello, " + req.payload.get("firstName"));
+        });
+
         /**
          * SERVER LISTENER
          */

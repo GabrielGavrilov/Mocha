@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 public class MochaClient {
 
     /**
-     * Initializer for the MochaClient class. Reads the socket's requested header
+     * Initializes the MochaClient class. Reads the socket's requested header
      * and determines the response based on the method and route.
      *
      * @param clientInput Socket InputStream.
@@ -41,13 +41,13 @@ public class MochaClient {
     }
 
     /**
+     * Handles the given HTTP request.
      *
-     *
-     * @param header
-     * @param route
-     * @param method
-     * @param clientOutput
-     * @param br
+     * @param header Socket header.
+     * @param route Requested route.
+     * @param method Requested method.
+     * @param clientOutput Client output stream.
+     * @param br Buffered Reader
      * @throws IOException
      */
     private void handleRequest(String header, String route, String method, OutputStream clientOutput, BufferedReader br) throws IOException
@@ -72,10 +72,11 @@ public class MochaClient {
     }
 
     /**
+     * Checks if the given route is a static file. If the route is a static file, then
+     * this method will return the static file's type. Otherwise, it'll return a null.
      *
-     *
-     * @param route
-     * @return
+     * @param route Requested route.
+     * @return String.
      * @throws IOException
      */
     private String checkForStaticRoute(String route) throws IOException
@@ -90,11 +91,11 @@ public class MochaClient {
     }
 
     /**
+     * Handles the static route.
      *
-     *
-     * @param route
-     * @param type
-     * @param clientOutput
+     * @param route Requested route.
+     * @param type Static file type.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void handleStaticRoute(String route, String type, OutputStream clientOutput) throws IOException
@@ -117,11 +118,11 @@ public class MochaClient {
     }
 
     /**
+     * Renders the static file.
      *
-     *
-     * @param contentType
-     * @param route
-     * @param clientOutput
+     * @param contentType Content type of the static file.
+     * @param route requested route.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void renderStaticFile(String contentType, String route, OutputStream clientOutput) throws IOException
@@ -136,11 +137,11 @@ public class MochaClient {
     }
 
     /**
+     * Renders the static image.
      *
-     *
-     * @param contentType
-     * @param route
-     * @param clientOutput
+     * @param contentType Content type of the static image.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void renderStaticImage(String contentType, String route, OutputStream clientOutput) throws IOException
@@ -173,11 +174,11 @@ public class MochaClient {
     }
 
     /**
+     * Handles the GET request.
      *
-     *
-     * @param header
-     * @param route
-     * @param clientOutput
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void handleGetRequest(String header, String route, OutputStream clientOutput) throws IOException
@@ -198,12 +199,12 @@ public class MochaClient {
     }
 
     /**
+     * Handles the POST request.
      *
-     *
-     * @param header
-     * @param route
-     * @param clientOutput
-     * @param br
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
+     * @param br Buffered reader.
      * @throws IOException
      */
     private void handlePostRequest(String header, String route, OutputStream clientOutput, BufferedReader br) throws IOException
@@ -230,11 +231,11 @@ public class MochaClient {
     }
 
     /**
+     * Handles the GET response.
      *
-     *
-     * @param header
-     * @param route
-     * @param clientOutput
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void handleGetResponse(String header, String route, OutputStream clientOutput) throws IOException
@@ -253,12 +254,12 @@ public class MochaClient {
     }
 
     /**
+     * Handles the POST response.
      *
-     *
-     * @param header
-     * @param route
-     * @param clientOutput
-     * @param payload
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
+     * @param payload Post payload.
      * @throws IOException
      */
     private void handlePostResponse(String header, String route, OutputStream clientOutput, String payload) throws IOException
@@ -277,12 +278,12 @@ public class MochaClient {
     }
 
     /**
+     * Handles the parsed GET route.
      *
-     *
-     * @param header
-     * @param consumer
-     * @param route
-     * @param clientOutput
+     * @param header Client HTTP header.
+     * @param consumer MochaRequest and MochaResponse BiConsumer.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void handleParsedGetRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput) throws IOException
@@ -301,13 +302,13 @@ public class MochaClient {
     }
 
     /**
+     * Handles the parsed POST route.
      *
-     *
-     * @param header
-     * @param consumer
-     * @param route
-     * @param clientOutput
-     * @param payload
+     * @param header Client HTTP header.
+     * @param consumer MochaRequest and MochaResponse BiConsumer.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
+     * @param payload POST payload.
      * @throws IOException
      */
     private void handleParsedPostRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput, String payload) throws IOException
@@ -327,11 +328,11 @@ public class MochaClient {
     }
 
     /**
+     * Returns the BiConsumer from the parsed route.
      *
-     *
-     * @param route
-     * @param hashMap
-     * @return
+     * @param route Requested route.
+     * @param hashMap Method hashmap.
+     * @return MochaRequest and MochaResponse BiConsumer
      */
     private BiConsumer<MochaRequest, MochaResponse> getBiConsumerFromParsedRoute(String route, HashMap<String, BiConsumer<MochaRequest, MochaResponse>> hashMap)
     {
@@ -346,11 +347,11 @@ public class MochaClient {
     }
 
     /**
+     * Returns the template route from the parsed route.
      *
-     *
-     * @param route
-     * @param hashMap
-     * @return
+     * @param route Requested route.
+     * @param hashMap Method hashmap.
+     * @return String
      */
     private String getTemplateFromParsedRoute(String route, HashMap<String, BiConsumer<MochaRequest, MochaResponse>> hashMap)
     {
@@ -365,10 +366,10 @@ public class MochaClient {
     }
 
     /**
+     * Parses the raw payload into a hashmap.
      *
-     *
-     * @param payload
-     * @return
+     * @param payload Raw payload.
+     * @return String and String Hashmap.
      */
     private HashMap<String, String> parsePayloadToHashMap(String payload)
     {
@@ -385,10 +386,10 @@ public class MochaClient {
     }
 
     /**
+     * Parses the cookies into a hash map.
      *
-     *
-     * @param header
-     * @return
+     * @param header Client HTTP header.
+     * @return String and String Hashmap.
      */
     private HashMap<String, String> parseCookiesToHashMap(String header)
     {
@@ -419,9 +420,9 @@ public class MochaClient {
     }
 
     /**
+     * Handles the 404 page.
      *
-     *
-     * @param clientOutput
+     * @param clientOutput Client output stream.
      * @throws IOException
      */
     private void handleRouteNotFoundRequest(OutputStream clientOutput) throws IOException
@@ -433,11 +434,11 @@ public class MochaClient {
     }
 
     /**
+     * Executes the BiConsumer.
      *
-     *
-     * @param consumer
-     * @param request
-     * @param response
+     * @param consumer MochaRequest and MochaResponse BiConsumer.
+     * @param request Mocha request.
+     * @param response Mocha response.
      */
     private static void consume(BiConsumer<MochaRequest, MochaResponse> consumer, MochaRequest request, MochaResponse response)
     {
@@ -445,10 +446,10 @@ public class MochaClient {
     }
 
     /**
+     * Returns the requested route.
      *
-     *
-     * @param clientHeader
-     * @return
+     * @param clientHeader Client HTTP header.
+     * @return String
      */
     private static String getRequestedRoute(String clientHeader)
     {
@@ -456,10 +457,10 @@ public class MochaClient {
     }
 
     /**
+     * Returns the reauested method.
      *
-     *
-     * @param clientHeader
-     * @return
+     * @param clientHeader Client HTTP header.
+     * @return String
      */
     private static String getRequestedMethod(String clientHeader)
     {
