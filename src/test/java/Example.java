@@ -9,19 +9,19 @@ public class Example extends Mocha
 
         get("/", (req, res)->
         {
+            res.initializeHeader("200 OK", "text/html");
+            res.setCookie("name", "Gabriel");
             res.render("index.html");
         });
 
         get("/form", (req, res)-> {
+            res.initializeHeader("200 OK", "text/html");
             res.render("form.html");
         });
 
-        get("/greet/{name}", (req, res)-> {
-            res.send("Greetings, " + req.parameter.get("name"));
-        });
-
-        post("/submit", (req, res)-> {
-           res.send("Hello, " + req.payload.get("firstName"));
+        get("*", (req, res)-> {
+            res.initializeHeader("200 OK", "text/html");
+            res.send("<h1>404</h1");
         });
 
         /**

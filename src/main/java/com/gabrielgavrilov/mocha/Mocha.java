@@ -84,4 +84,18 @@ public class Mocha
         }
     }
 
+    public static void listen(int port, String host, Runnable callback)
+    {
+        try
+        {
+            callback.run();
+            MochaListenerThread serverThread = new MochaListenerThread(port, host);
+            serverThread.start();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

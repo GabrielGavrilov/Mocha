@@ -1,11 +1,13 @@
 package com.gabrielgavrilov.mocha;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MochaListenerThread extends Thread {
 
+    private String host;
     private int port;
     private ServerSocket server;
 
@@ -19,6 +21,14 @@ public class MochaListenerThread extends Thread {
     MochaListenerThread(int port) throws IOException {
         this.port = port;
         this.server = new ServerSocket(port);
+    }
+
+    MochaListenerThread(int port, String host) throws IOException {
+        this.port = port;
+        this.host = host;
+
+        InetAddress hostAddress = InetAddress.getByName(host);
+        this.server = new ServerSocket(port, 5, hostAddress);
     }
 
     /**

@@ -2,6 +2,8 @@ package com.gabrielgavrilov.mocha;
 
 import java.io.*;
 import java.nio.Buffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -128,11 +130,14 @@ public class MochaClient {
     private void renderStaticFile(String contentType, String route, OutputStream clientOutput) throws IOException
     {
         String file = route.substring(1);
-        MochaResponse response = new MochaResponse("200 OK", contentType);
+        MochaResponse response = new MochaResponse();
+        String fileContent = Files.readString(Paths.get(Mocha.STATIC_DIRECTORY + file));
 
-        response.render(file, Mocha.STATIC_DIRECTORY);
+        response.initializeHeader("200 OK", contentType);
 
         clientOutput.write(response.header.toString().getBytes());
+        clientOutput.write("\r\n".getBytes());
+        clientOutput.write(fileContent.getBytes());
         clientOutput.flush();
     }
 
@@ -147,9 +152,12 @@ public class MochaClient {
     private void renderStaticImage(String contentType, String route, OutputStream clientOutput) throws IOException
     {
         String file = route.substring(1);
-        MochaResponse response = new MochaResponse("200 OK", contentType);
+        MochaResponse response = new MochaResponse();
+
+        response.initializeHeader("200 OK", contentType);
 
         clientOutput.write(response.header.toString().getBytes());
+        clientOutput.write("\r\n".getBytes());
 
         try
         {
@@ -241,16 +249,14 @@ public class MochaClient {
     private void handleGetResponse(String header, String route, OutputStream clientOutput) throws IOException
     {
         MochaRequest request = new MochaRequest();
-        MochaResponse response = new MochaResponse("200 OK", "text/html");
+        MochaResponse response = new MochaResponse();
         parseCookiesToHashMap(header);
 
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(Mocha.GET_ROUTES.get(route), request, response);
-
-        clientOutput.write(response.header.toString().getBytes());
-        clientOutput.flush();
+        writeFullResponse(response, clientOutput);
     }
 
     /**
@@ -265,16 +271,14 @@ public class MochaClient {
     private void handlePostResponse(String header, String route, OutputStream clientOutput, String payload) throws IOException
     {
         MochaRequest request = new MochaRequest();
-        MochaResponse response = new MochaResponse("200 OK", "text/html");
+        MochaResponse response = new MochaResponse();
 
         request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
         consume(Mocha.POST_ROUTES.get(route), request, response);
-
-        clientOutput.write(response.header.toString().getBytes());
-        clientOutput.flush();
+        writeFullResponse(response, clientOutput);
     }
 
     /**
@@ -289,7 +293,7 @@ public class MochaClient {
     private void handleParsedGetRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput) throws IOException
     {
         MochaRequest request = new MochaRequest();
-        MochaResponse response = new MochaResponse("200 OK", "text/html");
+        MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.GET_ROUTES), route);
 
         request.parameter = parser.parse();
@@ -297,8 +301,7 @@ public class MochaClient {
         request.header = header;
 
         consume(consumer, request, response);
-
-        clientOutput.write(response.header.toString().getBytes());
+        writeFullResponse(response, clientOutput);
     }
 
     /**
@@ -314,7 +317,7 @@ public class MochaClient {
     private void handleParsedPostRoute(String header, BiConsumer<MochaRequest, MochaResponse> consumer, String route, OutputStream clientOutput, String payload) throws IOException
     {
         MochaRequest request = new MochaRequest();
-        MochaResponse response = new MochaResponse("200 OK", "text/html");
+        MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.POST_ROUTES), route);
 
         request.parameter = parser.parse();
@@ -323,8 +326,7 @@ public class MochaClient {
         request.header = header;
 
         consume(consumer, request, response);
-
-        clientOutput.write(response.header.toString().getBytes());
+        writeFullResponse(response, clientOutput);
     }
 
     /**
@@ -427,10 +429,24 @@ public class MochaClient {
      */
     private void handleRouteNotFoundRequest(OutputStream clientOutput) throws IOException
     {
-        MochaResponse response = new MochaResponse("200 OK", "text/html");
+        for(Map.Entry<String, BiConsumer<MochaRequest, MochaResponse>> entry : Mocha.GET_ROUTES.entrySet())
+        {
+            if(entry.getKey().equals("*"))
+            {
+                MochaRequest request = new MochaRequest();
+                MochaResponse response = new MochaResponse();
+                BiConsumer<MochaRequest, MochaResponse> callback = entry.getValue();
+
+                consume(callback, request, response);
+                writeFullResponse(response, clientOutput);
+                return;
+            }
+        }
+
+        MochaResponse response = new MochaResponse();
+        response.initializeHeader("200 OK", "text/html");
         response.send("<h2>404</h2><p>The page you are looking for does not exist.</p>");
-        clientOutput.write(response.header.toString().getBytes());
-        clientOutput.flush();
+        writeFullResponse(response, clientOutput);
     }
 
     /**
@@ -465,5 +481,12 @@ public class MochaClient {
     private static String getRequestedMethod(String clientHeader)
     {
         return clientHeader.split("\r\n")[0].split(" ")[0];
+    }
+
+    private static void writeFullResponse(MochaResponse response, OutputStream clientOutput) throws IOException {
+        clientOutput.write(response.header.toString().getBytes());
+        clientOutput.write("\r\n".getBytes());
+        clientOutput.write(response.body.toString().getBytes());
+        clientOutput.flush();
     }
 }
