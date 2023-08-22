@@ -381,6 +381,7 @@ public class MochaClient {
         for(int i = 0; i < payloads.length; i++)
         {
             String[] currentPayload = payloads[i].split("=");
+            //String p = encodePayloadValue(currentPayload[1]);
             payloadData.put(currentPayload[0], currentPayload[1]);
         }
 

@@ -14,4 +14,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.hubspot.jinjava/jinjava -->
+        <dependency>
+            <groupId>com.hubspot.jinjava</groupId>
+            <artifactId>jinjava</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.42.0.0</version>
+        </dependency>
+
+    </dependencies>
+
 </project>
