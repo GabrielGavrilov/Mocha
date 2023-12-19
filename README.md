@@ -12,3 +12,4 @@ public static void main(String[] args) extends Mocha {
 }
 ```
 ## Installation
+See "Assets" in <a href="https://github.com/GabrielGavrilov/mocha-jar/releases/tag/alpha">releases section.</a>
