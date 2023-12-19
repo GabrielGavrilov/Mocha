@@ -110,6 +110,14 @@ public class Mocha
         }
     }
 
+    /**
+     * Starts the Mocha web server at the given port and host address and listens for new sockets.
+     *
+     * @param port Port for the server.
+     * @param host Host IP for the server.
+     * @param callback Runnable callback that gets executed when the server starts
+     *                 listening for new sockets.
+     */
     public static void listen(int port, String host, Runnable callback)
     {
         try
