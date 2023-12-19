@@ -21,12 +21,12 @@ public class MochaClient {
     {
         try
         {
-            InputStreamReader sr = new InputStreamReader(clientInput);
-            BufferedReader br = new BufferedReader(sr);
+            InputStreamReader streamReader = new InputStreamReader(clientInput);
+            BufferedReader buffReader = new BufferedReader(streamReader);
             StringBuilder clientHeader = new StringBuilder();
 
             String line;
-            while((line = br.readLine()).length() != 0)
+            while((line = buffReader.readLine()).length() != 0)
             {
                 clientHeader.append(line + "\r\n");
             }
@@ -34,7 +34,7 @@ public class MochaClient {
             String route = getRequestedRoute(clientHeader.toString());
             String method = getRequestedMethod(clientHeader.toString());
 
-            handleRequest(clientHeader.toString(), route, method, clientOutput, br);
+            handleRequest(clientHeader.toString(), route, method, clientOutput, buffReader);
         }
         catch (IOException e)
         {
@@ -49,10 +49,10 @@ public class MochaClient {
      * @param route Requested route.
      * @param method Requested method.
      * @param clientOutput Client output stream.
-     * @param br Buffered Reader
+     * @param buffReader Buffered Reader
      * @throws IOException
      */
-    private void handleRequest(String header, String route, String method, OutputStream clientOutput, BufferedReader br) throws IOException
+    private void handleRequest(String header, String route, String method, OutputStream clientOutput, BufferedReader buffReader) throws IOException
     {
         String type = checkForStaticRoute(route);
 
@@ -68,7 +68,13 @@ public class MochaClient {
                 handleGetRequest(header, route, clientOutput);
                 break;
             case "POST":
-                handlePostRequest(header, route, clientOutput, br);
+                handlePostRequest(header, route, clientOutput, buffReader);
+                break;
+            case "PUT":
+                handlePutRequest(header, route, clientOutput, buffReader);
+                break;
+            case "DELETE":
+                handleDeleteRequest(header, route, clientOutput, buffReader);
                 break;
         }
     }
@@ -200,10 +206,14 @@ public class MochaClient {
         }
 
         if(Mocha.GET_ROUTES.get(route) != null)
+        {
             handleGetResponse(header, route, clientOutput);
+        }
 
         else
+        {
             handleRouteNotFoundRequest(clientOutput);
+        }
     }
 
     /**
@@ -212,17 +222,17 @@ public class MochaClient {
      * @param header Client HTTP header.
      * @param route Requested route.
      * @param clientOutput Client output stream.
-     * @param br Buffered reader.
+     * @param buffReader Buffered reader.
      * @throws IOException
      */
-    private void handlePostRequest(String header, String route, OutputStream clientOutput, BufferedReader br) throws IOException
+    private void handlePostRequest(String header, String route, OutputStream clientOutput, BufferedReader buffReader) throws IOException
     {
         StringBuilder payload = new StringBuilder();
         BiConsumer<MochaRequest, MochaResponse> consumerResponse = getBiConsumerFromParsedRoute(route, Mocha.POST_ROUTES);
 
-        while(br.ready())
+        while(buffReader.ready())
         {
-            payload.append((char)br.read());
+            payload.append((char)buffReader.read());
         }
 
         if(consumerResponse != null)
@@ -232,11 +242,88 @@ public class MochaClient {
         }
 
         if(Mocha.POST_ROUTES.get(route) != null)
+        {
             handlePostResponse(header, route, clientOutput, payload.toString());
+        }
 
         else
+        {
             handleRouteNotFoundRequest(clientOutput);
+        }
     }
+
+    /**
+     * Handles the PUT request.
+     *
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
+     * @param buffReader Buffered reader.
+     * @throws IOException
+     */
+    private void handlePutRequest(String header, String route, OutputStream clientOutput, BufferedReader buffReader) throws IOException
+    {
+        StringBuilder payload = new StringBuilder();
+        BiConsumer<MochaRequest, MochaResponse> consumerResponse = getBiConsumerFromParsedRoute(route, Mocha.PUT_ROUTES);
+
+        while(buffReader.ready())
+        {
+            payload.append((char)buffReader.read());
+        }
+
+        if(consumerResponse != null)
+        {
+            // TODO handleParsedPutResponse()
+            return;
+        }
+
+        if(Mocha.PUT_ROUTES.get(route) != null)
+        {
+            // TODO handlePutResponse()
+        }
+
+        else
+        {
+            handleRouteNotFoundRequest(clientOutput);
+        }
+    }
+
+    /**
+     * Handles the DELETE request.
+     *
+     * @param header Client HTTP header.
+     * @param route Requested route.
+     * @param clientOutput Client output stream.
+     * @param buffReader Buffered reader.
+     * @throws IOException
+     */
+    private void handleDeleteRequest(String header, String route, OutputStream clientOutput, BufferedReader buffReader) throws IOException
+    {
+        StringBuilder payload = new StringBuilder();
+        BiConsumer<MochaRequest, MochaResponse> consumerResponse = getBiConsumerFromParsedRoute(route, Mocha.DELETE_ROUTES);
+
+        while(buffReader.ready())
+        {
+            payload.append((char)buffReader.read());
+        }
+
+        if(consumerResponse != null)
+        {
+            // TODO handleParsedDeleteResponse()
+            return;
+        }
+
+        if(Mocha.DELETE_ROUTES.get(route) != null)
+        {
+            // TODO handleDeleteResponse()
+        }
+
+        else
+        {
+            handleRouteNotFoundRequest(clientOutput);
+        }
+    }
+
 
     /**
      * Handles the GET response.
@@ -381,7 +468,6 @@ public class MochaClient {
         for(int i = 0; i < payloads.length; i++)
         {
             String[] currentPayload = payloads[i].split("=");
-            //String p = encodePayloadValue(currentPayload[1]);
             payloadData.put(currentPayload[0], currentPayload[1]);
         }
 

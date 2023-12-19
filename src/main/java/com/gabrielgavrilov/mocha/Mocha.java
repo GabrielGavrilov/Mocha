@@ -12,10 +12,12 @@ public class Mocha
 {
 
     /**
-     * GET and POST routes
+     * CRUD routes
      */
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> GET_ROUTES = new HashMap<>();
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> POST_ROUTES = new HashMap<>();
+    protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> PUT_ROUTES = new HashMap<>();
+    protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> DELETE_ROUTES = new HashMap<>();
 
     protected static String VIEWS_DIRECTORY = "";
     protected static String STATIC_DIRECTORY = "";
@@ -61,6 +63,30 @@ public class Mocha
     public static void post(String route, BiConsumer<MochaRequest, MochaResponse> callback)
     {
         POST_ROUTES.put(route, callback);
+    }
+
+    /**
+     * Creates a new PUT route. Stores the route and its callback into a hashmap. Gets called by
+     * the MochaClient class when needed.
+     *
+     * @param route Route
+     * @param callback Callback function (BiConsumer that accepts MochaRequest and MochaResponse).
+     */
+    public static void put(String route, BiConsumer<MochaRequest, MochaResponse> callback)
+    {
+        PUT_ROUTES.put(route, callback);
+    }
+
+    /**
+     * Creates as new DELETE route. Stores the route and its callback into a hashmap. Gets called
+     * by the MochaClient class when needed.
+     *
+     * @param route
+     * @param callback
+     */
+    public static void delete(String route, BiConsumer<MochaRequest, MochaResponse> callback)
+    {
+        DELETE_ROUTES.put(route, callback);
     }
 
     /**
