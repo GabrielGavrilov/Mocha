@@ -11,5 +11,15 @@ public static void main(String[] args) extends Mocha {
   });
 }
 ```
+## Features
+- GET routes
+- POST routes
+- PUT routes
+- DELETE routes
+- Route parameters
+- Response header manipulation
+- Cookies
+- HTTP body payloads
+
 ## Installation
 See "Assets" in <a href="https://github.com/GabrielGavrilov/mocha-jar/releases/tag/alpha">releases section.</a>
