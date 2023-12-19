@@ -17,7 +17,8 @@ public static void main(String[] args) extends Mocha {
 - PUT routes
 - DELETE routes
 - Route parameters
-- Response header manipulation
+- File rendering (html, json, etc)
+- Static file rendering (css, pngs, etc)
 - Cookies
 - HTTP body payloads
 
