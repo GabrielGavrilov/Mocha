@@ -1,4 +1,5 @@
-# Mocha - A tiny flexible web framework for Java
+# Mocha-jar
+A tiny flexible web framework for Java
 ```Java
 public static void main(String[] args) extends Mocha {
   get("/", (request, response)-> {
@@ -10,3 +11,4 @@ public static void main(String[] args) extends Mocha {
   });
 }
 ```
+## Installation
