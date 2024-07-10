@@ -1,5 +1,7 @@
 package com.gabrielgavrilov.mocha;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.hubspot.jinjava.lib.exptest.IsOddExpTest;
 
 import java.io.*;
@@ -10,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class MochaClient {
+public class MochaClient<T> {
 
     /**
      * Initializes the MochaClient class. Reads the socket's requested header
@@ -245,6 +247,9 @@ public class MochaClient {
 
         if(Mocha.POST_ROUTES.get(route) != null)
         {
+            System.out.println(getRequestContentType(header));
+//            System.out.println(header);
+//            System.out.println(payload.toString());
             handlePostResponse(header, route, clientOutput, payload.toString());
         }
 
@@ -362,7 +367,8 @@ public class MochaClient {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-        request.payload = parsePayloadToHashMap(payload);
+        parsePayload(header, payload, request);
+
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -550,6 +556,22 @@ public class MochaClient {
         return null;
     }
 
+    private void parsePayload(String header, String payload, MochaRequest request)
+    {
+        String contentType = getRequestContentType(header);
+
+        switch(contentType)
+        {
+            case "text/plain":
+                request.payload = parsePayloadToHashMap(payload);
+                break;
+            case "application/json":
+                request.payload = parsePayloadToJsonObject(payload);
+                break;
+        }
+
+    }
+
     /**
      * Parses the raw payload into a hashmap.
      *
@@ -568,6 +590,11 @@ public class MochaClient {
         }
 
         return payloadData;
+    }
+
+    private JsonObject parsePayloadToJsonObject(String payload)
+    {
+        return JsonParser.parseString(payload).getAsJsonObject();
     }
 
     /**
@@ -664,6 +691,11 @@ public class MochaClient {
     private static String getRequestedMethod(String clientHeader)
     {
         return clientHeader.split("\r\n")[0].split(" ")[0];
+    }
+
+    private static String getRequestContentType(String clientHeader)
+    {
+        return clientHeader.split("\r\n")[1].split(": ")[1];
     }
 
     private static void writeFullResponse(MochaResponse response, OutputStream clientOutput) throws IOException {
