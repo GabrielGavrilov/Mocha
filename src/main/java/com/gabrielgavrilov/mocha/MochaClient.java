@@ -387,7 +387,8 @@ public class MochaClient<T> {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-//        request.payload = parsePayloadToHashMap(payload);
+        parsePayload(header, payload, request);
+
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -409,7 +410,8 @@ public class MochaClient<T> {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-//        request.payload = parsePayloadToHashMap(payload);
+        parsePayload(header, payload, request);
+
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -456,8 +458,9 @@ public class MochaClient<T> {
         MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.POST_ROUTES), route);
 
+        parsePayload(header, payload, request);
+
         request.parameter = parser.parse();
-//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -481,8 +484,9 @@ public class MochaClient<T> {
         MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.PUT_ROUTES), route);
 
+        parsePayload(header, payload, request);
+
         request.parameter = parser.parse();
-//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -506,8 +510,9 @@ public class MochaClient<T> {
         MochaResponse response = new MochaResponse();
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.DELETE_ROUTES), route);
 
+        parsePayload(header, payload, request);
+
         request.parameter = parser.parse();
-//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
