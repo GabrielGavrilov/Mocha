@@ -30,7 +30,7 @@ public class MochaClient<T> {
             StringBuilder clientHeader = new StringBuilder();
 
             String line;
-            while((line = buffReader.readLine()).length() != 0)
+            while((line = buffReader.readLine()) != null && line.length() != 0)
             {
                 clientHeader.append(line + "\r\n");
             }
@@ -247,9 +247,6 @@ public class MochaClient<T> {
 
         if(Mocha.POST_ROUTES.get(route) != null)
         {
-            System.out.println(getRequestContentType(header));
-//            System.out.println(header);
-//            System.out.println(payload.toString());
             handlePostResponse(header, route, clientOutput, payload.toString());
         }
 
@@ -390,7 +387,7 @@ public class MochaClient<T> {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-        request.payload = parsePayloadToHashMap(payload);
+//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -412,7 +409,7 @@ public class MochaClient<T> {
         MochaRequest request = new MochaRequest();
         MochaResponse response = new MochaResponse();
 
-        request.payload = parsePayloadToHashMap(payload);
+//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -460,7 +457,7 @@ public class MochaClient<T> {
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.POST_ROUTES), route);
 
         request.parameter = parser.parse();
-        request.payload = parsePayloadToHashMap(payload);
+//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -485,7 +482,7 @@ public class MochaClient<T> {
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.PUT_ROUTES), route);
 
         request.parameter = parser.parse();
-        request.payload = parsePayloadToHashMap(payload);
+//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -510,7 +507,7 @@ public class MochaClient<T> {
         MochaParser parser = new MochaParser(getTemplateFromParsedRoute(route, Mocha.DELETE_ROUTES), route);
 
         request.parameter = parser.parse();
-        request.payload = parsePayloadToHashMap(payload);
+//        request.payload = parsePayloadToHashMap(payload);
         request.cookie = parseCookiesToHashMap(header);
         request.header = header;
 
@@ -563,10 +560,10 @@ public class MochaClient<T> {
         switch(contentType)
         {
             case "text/plain":
-                request.payload = parsePayloadToHashMap(payload);
+                request.payload = new MochaPayload(parsePayloadToHashMap(payload));
                 break;
             case "application/json":
-                request.payload = parsePayloadToJsonObject(payload);
+                request.payload = new MochaPayload(parsePayloadToJsonObject(payload));
                 break;
         }
 
@@ -679,11 +676,16 @@ public class MochaClient<T> {
      */
     private static String getRequestedRoute(String clientHeader)
     {
-        return clientHeader.split("\r\n")[0].split(" ")[1];
+        String[] routeSplit = clientHeader.split("\r\n")[0].split(" ");
+
+        if(routeSplit.length > 1)
+            return routeSplit[1];
+
+        return "/";
     }
 
     /**
-     * Returns the reauested method.
+     * Returns the requested method.
      *
      * @param clientHeader Client HTTP header.
      * @return String

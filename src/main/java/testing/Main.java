@@ -8,10 +8,11 @@ import java.util.HashMap;
 
 public class Main extends Mocha {
     public static void main(String[] args) {
+
         post("/", (request, response)-> {
             response.initializeHeader("200 OK", "application/json");
 
-            System.out.println(request.get("msg"));
+            System.out.println(request.payload.get("msg"));
 
             response.send("OK");
         });
@@ -19,5 +20,6 @@ public class Main extends Mocha {
         listen(3000, ()-> {
             System.out.println("Running on port 3000...");
         });
+
     }
 }
