@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gabrielgavrilov.mocha</groupId>
-    <artifactId>mocha-jar</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>mocha</artifactId>
+    <version>1.5-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
