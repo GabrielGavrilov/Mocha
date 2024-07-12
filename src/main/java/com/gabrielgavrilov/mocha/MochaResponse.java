@@ -24,19 +24,19 @@ public class MochaResponse
         this.header.append(header + ": " + value + "\r\n");
     }
 
-    public void setStatus(String status)
+    public void status(String status)
     {
         if(!this.header.toString().contains("HTTP/1.0" + status))
             this.header.append("HTTP/1.0 " + status + "\r\n");
     }
 
-    public void setContentType(String contentType)
+    public void contentType(String contentType)
     {
         if(!this.header.toString().contains("Content-Type: " + contentType))
             addHeader("Content-Type", contentType);
     }
 
-    public void setCookie(String name, String value)
+    public void cookie(String name, String value)
     {
         addHeader("Set-Cookie", name+"="+value);
     }

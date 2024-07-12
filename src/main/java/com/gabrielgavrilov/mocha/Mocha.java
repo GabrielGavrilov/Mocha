@@ -14,6 +14,8 @@ public class Mocha
     /**
      * CRUD routes
      */
+    protected static String MOCHA_VERSION = "1.5.0";
+
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> GET_ROUTES = new HashMap<>();
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> POST_ROUTES = new HashMap<>();
     protected static HashMap<String, BiConsumer<MochaRequest, MochaResponse>> PUT_ROUTES = new HashMap<>();

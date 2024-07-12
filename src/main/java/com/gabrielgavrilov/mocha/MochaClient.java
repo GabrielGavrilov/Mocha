@@ -657,7 +657,7 @@ public class MochaClient<T> {
 
         MochaResponse response = new MochaResponse();
         response.initializeHeader("200 OK", "text/html");
-        response.send("<h1>Not Found</h1><p>The requested URL was not found on this server.</p><hr><p>Mocha Java Server</p>");
+        response.send("<h1>Not Found</h1><p>The requested URL was not found on this server.</p><hr><p>Mocha/" + Mocha.MOCHA_VERSION + "</p>");
         writeFullResponse(response, clientOutput);
     }
 
@@ -707,7 +707,7 @@ public class MochaClient<T> {
 
     private static void writeFullResponse(MochaResponse response, OutputStream clientOutput) throws IOException {
         clientOutput.write(response.header.toString().getBytes());
-        clientOutput.write("\r\n".getBytes());
+//        clientOutput.write("\r\n".getBytes());
         clientOutput.write(response.body.toString().getBytes());
         clientOutput.flush();
     }
