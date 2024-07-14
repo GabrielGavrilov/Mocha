@@ -10,9 +10,9 @@ A tiny flexible web framework for Java
 public class Server extends Mocha {
   public static void main(String[] args) {
     get("/", (request, response)-> {
-      response.initializeHeader("200 OK", "text/html")
+      response.initializeHeader("200 OK", "text/html");
       response.send("<h1>Hello from Mocha!</h1>");
-    })
+    });
   
     listen(3000, ()-> {
       System.out.println("Listening on port 3000...");
@@ -51,3 +51,12 @@ delete("/", (request, response)-> {
 });
 ```
 
+Routes also support parameters, and can be accessed by calling the ``parameter`` hashmap. 
+
+```java
+get("/greet/{name}", (request, response)-> {
+  response.initializeHeader("200 OK", "text/html");
+  String name = request.parameter.get("name");
+  response.send("Hello, " + name + "!");
+})
+```
