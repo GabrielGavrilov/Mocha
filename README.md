@@ -66,11 +66,20 @@ get("/greet/{name}", (request, response)-> {
 The Request class has the following information and functionality:
 ```java
 request.payload()        // A MochaPayload class used to retrieve body payload information
-request.parameter()      // A hashmap used to map the parameter value by name
-request.cookie()         // A hashmap used to map the cookie value by name
+request.parameter()      // A hashmap used to map a parameter's value by name
+request.cookie()         // A hashmap used to map a cookie's value by name
 request.header           // requested HTTP header
 ```
 
 ## Response
 The Response class has the following information and functionality:
+```java
+response.initializeHeader()    // Used to intiialize the status and content-type for the response
+response.addHeader()           // Appends a custom header to the response
+response.status()              // Sets the HTTP status
+response.contentType()         // Sets the content-type
+response.cookie()              // Sets a cookie
+response.send()                // Sends data to the response
+response.render()              // Renders a given file
+```
 
