@@ -83,3 +83,15 @@ response.send()                // Sends data to the response
 response.render()              // Renders a given file
 ```
 
+## Payloads
+
+Mocha expects a body payload for the following routes:
+- POST
+- UPDATE
+- DELETE
+
+As of right now, Mocha only accepts ``raw`` and ``JSON`` payloads. Payloads can be accessed by using the Request class:
+```java
+request.payload.get("foo")
+```
+
