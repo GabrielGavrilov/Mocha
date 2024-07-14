@@ -60,3 +60,17 @@ get("/greet/{name}", (request, response)-> {
   response.send("Hello, " + name + "!");
 })
 ```
+
+## Request
+
+The Request class has the following information and functionality:
+```java
+request.payload()        // A MochaPayload class used to retrieve body payload information
+request.parameter()      // A hashmap used to map the parameter value by name
+request.cookie()         // A hashmap used to map the cookie value by name
+request.header           // requested HTTP header
+```
+
+## Response
+The Response class has the following information and functionality:
+
