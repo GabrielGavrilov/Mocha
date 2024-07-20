@@ -92,7 +92,29 @@ Mocha expects a body payload for the following routes:
 
 As of right now, Mocha only accepts ``raw`` and ``JSON`` payloads. Payloads can be accessed by using the Request's payload hashmap:
 ```java
-request.payload.get("foo")
+request.payload.get("foo"); // bar
+```
+
+## Cookies
+
+With Mocha, cookies are obtained through the request, and sent through the response. You can obtain a cookie by using the Request's cookie payload by calling the cookie's name:
+
+```java
+request.cookie.get("foo"); // bar
+```
+
+You can send a new cookie to the user by using the Response's cookie function. The first parameter for the function takes the cookie name, while the second parameter takes the cookie value.
+
+```java
+response.cookie("foo", "bar");
+```
+
+## Custom headers
+
+You can add custom headers to the Response by using the Response's addHeader function. The first parameter for the function takes the header name, while the second parameter takes the header value.
+
+```java
+response.addHeader("Content-Type", "application/json")
 ```
 
 ## Parameters
