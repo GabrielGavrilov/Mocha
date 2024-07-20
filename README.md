@@ -90,8 +90,24 @@ Mocha expects a body payload for the following routes:
 - UPDATE
 - DELETE
 
-As of right now, Mocha only accepts ``raw`` and ``JSON`` payloads. Payloads can be accessed by using the Request class:
+As of right now, Mocha only accepts ``raw`` and ``JSON`` payloads. Payloads can be accessed by using the Request's payload hashmap:
 ```java
 request.payload.get("foo")
+```
+
+## Parameters
+
+You can create a route parameter by wrapping its desired name in curly brackets. Parameters can be accessed by using the Request's parameter hashmap:
+```java
+request.parameter.get("foo"); // bar
+```
+
+A route that utilizes a parameter like this:
+```java
+get("/greet/{name}", (request, response)-> {
+  response.initializeHeader("200 OK", "text/html");
+  String name = request.parameter.get("name");
+  response.send("Hello, " + name + "!");
+});
 ```
 
